@@ -1,4 +1,4 @@
-use arith::ExtensionField;
+use arith::{SimdField, ExtensionField};
 use gf2::{GF2x8, GF2};
 use gf2_128::{GF2_128x8, GF2_128};
 use transcript::Keccak256hasher;
@@ -65,7 +65,7 @@ impl GKRConfig for GF2ExtConfigKeccak {
         a: &Self::CircuitField,
         b: &Self::SimdCircuitField,
     ) -> Self::SimdCircuitField {
-        Self::SimdCircuitField::from(*a) * *b
+        b.scale(a)
     }
 
     #[inline(always)]
