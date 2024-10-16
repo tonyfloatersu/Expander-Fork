@@ -1,4 +1,4 @@
-use arith::{SimdField, ExtensionField};
+use arith::{ExtensionField, SimdField};
 use gf2::{GF2x8, GF2};
 use gf2_128::{GF2_128x8, GF2_128};
 use transcript::Keccak256hasher;

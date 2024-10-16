@@ -293,4 +293,21 @@ impl<C: GKRConfig> Circuit<C> {
             layer.identify_structure_info();
         }
     }
+
+    pub fn sort_gates(&mut self) {
+        for layer in &mut self.layers {
+            let input_size = 1u128 << layer.input_var_num;
+            layer.mul.sort_by_key(|g| {
+                (g.o_id as u128) * input_size * input_size
+                    + (g.i_ids[0] as u128) * input_size
+                    + (g.i_ids[1] as u128)
+            });
+
+            layer
+                .add
+                .sort_by_key(|g| (g.o_id as u128) * input_size + (g.i_ids[0] as u128));
+            layer.const_.sort_by_key(|g| g.o_id);
+            layer.uni.sort_by_key(|g| g.o_id); // may have a lot of inputs
+        }
+    }
 }

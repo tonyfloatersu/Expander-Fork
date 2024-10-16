@@ -104,6 +104,7 @@ fn run_benchmark<C: GKRConfig>(args: &Args, config: Config<C>) {
 
         _ => unreachable!(),
     };
+    circuit_template.sort_gates();
 
     let witness_path = match args.scheme.as_str() {
         "keccak" => match C::FIELD_TYPE {
