@@ -234,20 +234,12 @@ where
         if !self.proof_locked {
             self.proof.bytes.extend_from_slice(buffer);
         }
-        let buffer_size = buffer.len();
-        let mut cur = 0;
-        while cur + 32 <= buffer_size {
-            let c = ChallengeF::from_uniform_bytes(buffer[cur..cur + 32].try_into().unwrap());
+        let mut buffer_local = buffer.to_vec();
+        buffer_local.resize(buffer_local.len().next_multiple_of(32), 0u8);
+        buffer_local.chunks_exact(32).for_each(|chunk_32| {
+            let c = ChallengeF::from_uniform_bytes(chunk_32.try_into().unwrap());
             c.to_limbs().iter().for_each(|l| self.data_pool.push(*l));
-            cur += 32
-        }
-
-        if cur < buffer_size {
-            let mut buffer_last = buffer[cur..].to_vec();
-            buffer_last.resize(32, 0);
-            let c = ChallengeF::from_uniform_bytes(buffer[cur..cur + 32].try_into().unwrap());
-            c.to_limbs().iter().for_each(|l| self.data_pool.push(*l));
-        }
+        });
     }
 
     fn generate_challenge_field_element(&mut self) -> ChallengeF {
